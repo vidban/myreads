@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
+import escapeRegExp from 'escape-string-regexp'
+import sortBy from 'sort-by'
+
 
 
 class SearchBooks extends Component {
@@ -8,11 +11,33 @@ class SearchBooks extends Component {
         books: PropTypes.array.isRequired
     }
 
+    state = {
+        query: ''
+    }
+
+    updateQuery = (query) => {
+        this.setState({query: query})
+    }
+
+    clearQuery = () => {
+        this.setState({query: ''})
+    }
+
     render(){
         const { books } = this.props
+        const { query } = this.state
 
-        let showingBooks = books
-        console.log(showingBooks)
+        console.log(books)
+        let showingBooks
+        if (query) {
+            const match = new RegExp(escapeRegExp(query), 'i')
+            showingBooks= books.filter((book) => match.test(book.title))
+        } else {
+            showingBooks = books
+        }
+        
+        showingBooks.sort(sortBy('title'))
+
         return (
             <div className="search-books">
             <div className="search-books-bar">
@@ -29,14 +54,19 @@ class SearchBooks extends Component {
                   However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
                   you don't find a specific author or title. Every search is limited by search terms.
                 */}
-                <input type="text" placeholder="Search by title or author"/>
+                <input 
+                    type="text" 
+                    placeholder="Search by title or author"
+                    value = {query}
+                    onChange = {(event) => this.updateQuery(event.target.value)}
+                    />
 
               </div>
             </div>
             <div className="search-books-results">
               <ol className="books-grid">
                   {showingBooks.map((book) => (
-                      <li>
+                      <li key={book.id}>
                           <div className="book">
                           <div className="book-top">
                             <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.thumbnail })`}}></div>
