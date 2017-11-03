@@ -1,43 +1,33 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import * as BooksAPI from './BooksAPI'
-import escapeRegExp from 'escape-string-regexp'
 
 
 class SearchBooks extends Component {
     state = {
-        query: '',
         books: []
     }
 
-    search(query,searched) {
-        BooksAPI.search(query, 20).then((books) => {
-            this.setState({books})
-            return searched = true
-        })
-    }
-
-    updateQuery = (query) => {
-        this.setState({query})
-    }
-
-
-    render(){
-        const {query, books} = this.state
-        let showingBooks, searched
-
-        if (query && !searched) {
-            console.log(1)
-            this.search(query, searched)
-            showingBooks = books
-        } else if (query && searched) {
-            console.log(2)
-            const match = new RegExp(escapeRegExp(query), 'i')
-            showingBooks = books.filter((book) => match.test(book.title))
-        } else {
-            showingBooks = []
+    search(query) {
+        let self = this
+        if (query){
+            BooksAPI.search(query, 20).then((books) => {
+                self.updateBooks(books)
+            })
+        }else {
+            self.updateBooks([])
         }
         
+    }
+
+    updateBooks = (books) => {
+        this.setState({books})
+    }
+
+   render(){
+        const {books} = this.state
+        console.log(1)
+       
         return (
             <div className="search-books">
             <div className="search-books-bar">
@@ -57,15 +47,13 @@ class SearchBooks extends Component {
                 <input 
                     type="text" 
                     placeholder="Search by title or author"
-                    value={query}
-                    onChange={(event) => this.updateQuery(event.target.value)}
+                    onChange={(event) => this.search(event.target.value, this)}
                     />
-
               </div>
             </div>
             <div className="search-books-results">
               <ol className="books-grid">
-                  {showingBooks.map((book) => (
+                  {books.map((book) => (
                       <li key={book.id}>
                           <div className="book">
                           <div className="book-top">
@@ -91,6 +79,18 @@ class SearchBooks extends Component {
         )
     }
 }
+
+// function search(query, self) {
+//     if (query){
+//         BooksAPI.search(query, 20).then((books) => {
+//             self.updateBooks(books)
+//         })
+//     }else {
+//         self.updateBooks([])
+//     }
+    
+// }
+
 
 
 export default SearchBooks
