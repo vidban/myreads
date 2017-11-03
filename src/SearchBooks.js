@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import * as BooksAPI from './BooksAPI'
+import escapeRegExp from 'escape-string-regexp'
 
 
 class SearchBooks extends Component {
@@ -9,28 +10,30 @@ class SearchBooks extends Component {
         books: []
     }
 
-    search() {
-        BooksAPI.search(this.state.query, 20).then((books) => {
+    search(query,searched) {
+        BooksAPI.search(query, 20).then((books) => {
             this.setState({books})
+            return searched = true
         })
     }
 
     updateQuery = (query) => {
-        this.setState({query: query})
+        this.setState({query})
     }
 
-    clearQuery = () => {
-        this.setState({query: ''})
-    }
 
     render(){
-        const {query} = this.state
-        const {books} = this.state
+        const {query, books} = this.state
+        let showingBooks, searched
 
-        let showingBooks
-        if (query) {
-            this.search()
-            showingBooks= books
+        if (query && !searched) {
+            console.log(1)
+            this.search(query, searched)
+            showingBooks = books
+        } else if (query && searched) {
+            console.log(2)
+            const match = new RegExp(escapeRegExp(query), 'i')
+            showingBooks = books.filter((book) => match.test(book.title))
         } else {
             showingBooks = []
         }
