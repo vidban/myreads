@@ -1,18 +1,18 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-import PropTypes from 'prop-types'
-import escapeRegExp from 'escape-string-regexp'
-import sortBy from 'sort-by'
-
+import * as BooksAPI from './BooksAPI'
 
 
 class SearchBooks extends Component {
-    static propTypes = {
-        books: PropTypes.array.isRequired
+    state = {
+        query: '',
+        books: []
     }
 
-    state = {
-        query: ''
+    search() {
+        BooksAPI.search(this.state.query, 20).then((books) => {
+            this.setState({books})
+        })
     }
 
     updateQuery = (query) => {
@@ -24,20 +24,17 @@ class SearchBooks extends Component {
     }
 
     render(){
-        const { books } = this.props
-        const { query } = this.state
+        const {query} = this.state
+        const {books} = this.state
 
-        console.log(books)
         let showingBooks
         if (query) {
-            const match = new RegExp(escapeRegExp(query), 'i')
-            showingBooks= books.filter((book) => match.test(book.title))
+            this.search()
+            showingBooks= books
         } else {
-            showingBooks = books
+            showingBooks = []
         }
         
-        showingBooks.sort(sortBy('title'))
-
         return (
             <div className="search-books">
             <div className="search-books-bar">
