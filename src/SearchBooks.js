@@ -11,8 +11,8 @@ class SearchBooks extends Component {
     search(query) {
         let self = this
         if (query){
-            BooksAPI.search(query, 20).then((books) => {
-                self.updateBooks(books)
+            BooksAPI.search(query).then((books) => {
+                (books.length>0) ? self.updateBooks(books) : self.updateBooks([])
             })
         }else {
             self.updateBooks([])
@@ -20,13 +20,19 @@ class SearchBooks extends Component {
         
     }
 
-    updateBooks = (books) => {
-        this.setState({books})
+    updateBooks = function(books) {
+        
+        if (books){
+            let fbooks = books.filter((book) => book.imageLinks)
+            this.setState({books: fbooks})
+        } else {
+            this.setState({books})
+        }
+       
     }
 
    render(){
         const {books} = this.state
-        console.log(1)
        
         return (
             <div className="search-books">
@@ -47,7 +53,7 @@ class SearchBooks extends Component {
                 <input 
                     type="text" 
                     placeholder="Search by title or author"
-                    onChange={(event) => this.search(event.target.value, this)}
+                    onChange={(event) => this.search(event.target.value)}
                     />
               </div>
             </div>
@@ -57,7 +63,7 @@ class SearchBooks extends Component {
                       <li key={book.id}>
                           <div className="book">
                           <div className="book-top">
-                            <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.thumbnail })`}}></div>
+                            <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.smallThumbnail })`}}></div>
                             <div className="book-shelf-changer">
                               <select>
                                 <option value="none" disabled>Move to...</option>
