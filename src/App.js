@@ -6,16 +6,14 @@ import SearchBooks from './SearchBooks'
 import * as BooksAPI from './BooksAPI'
 
 
-
 class BooksApp extends React.Component {
   state = {
     books: [],
-    searchBooks: []
+    updatedBookList: []
   }
 
   componentDidMount() {
     this.getAllBooks()
-
   }
 
   getAllBooks() {
@@ -25,7 +23,8 @@ class BooksApp extends React.Component {
   }
 
   onHandleShelfUpdate(book, bookShlf) {
-    BooksAPI.update(book, bookShlf).then(()=> {
+    BooksAPI.update(book, bookShlf).then((obj)=> {
+      this.setState({updatedBookList: obj })
       this.getAllBooks()
     })
   }
@@ -43,8 +42,10 @@ class BooksApp extends React.Component {
         } />  
         <Route path='/search' render={() => (
           <SearchBooks 
-            books={this.state.searchBooks}
-          />
+            currentBookList={this.state.updatedBookList}
+            onUpdateShelf={(book, bookShlf) => {
+              this.onHandleShelfUpdate(book, bookShlf)
+            }} />
         )} />
       </div>
       </Router>

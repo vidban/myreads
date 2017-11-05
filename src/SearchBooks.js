@@ -1,11 +1,18 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import * as BooksAPI from './BooksAPI'
+import PropTypes from 'prop-types'
+
 
 
 class SearchBooks extends Component {
+    static propTypes = {
+        onUpdateShelf: PropTypes.func.isRequired,
+    }
+
     state = {
-        books: []
+        books: [],
+        shelf: 'none'
     }
 
     search(query) {
@@ -17,18 +24,22 @@ class SearchBooks extends Component {
         }else {
             self.updateBooks([])
         }
-        
     }
 
     updateBooks = function(books) {
-        
         if (books){
             let fbooks = books.filter((book) => book.imageLinks)
+            // console.log(fbooks)
             this.setState({books: fbooks})
         } else {
             this.setState({books})
         }
        
+    }
+
+    updateShelf = (book, e) => {
+        this.setState({shelf: e.target.value })
+        this.props.onUpdateShelf(book, e.target.value)
     }
 
    render(){
@@ -65,7 +76,7 @@ class SearchBooks extends Component {
                           <div className="book-top">
                             <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.smallThumbnail })`}}></div>
                             <div className="book-shelf-changer">
-                              <select>
+                              <select value={(book.shelf) ? book.shelf : this.state.shelf} onChange={this.updateShelf.bind(this, book)}>
                                 <option value="none" disabled>Move to...</option>
                                 <option value="currentlyReading">Currently Reading</option>
                                 <option value="wantToRead">Want to Read</option>

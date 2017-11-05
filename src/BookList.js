@@ -9,7 +9,7 @@ class BookList extends Component {
     }
 
     updateShelf = (book, e) => {
-        console.log(book, e.target.value)
+        // console.log(book, e.target.value)
         this.props.onUpdateShelf(book, e.target.value)
     }
 
