@@ -26,13 +26,16 @@ class SearchBooks extends Component {
         }
     }
 
-    // TODO: Manage book state such that books that are on my shelves show as being on that shelf in the search page
-    //         by using the prop updatedBookList and assigning shelf to the related book on the search page
+    // TODO: Manage book state across pages more precisely by iteration over the obj returned by update method of BooksAPI
 
     updateBooks = function(books) {
         if (books){
             let fbooks = books.filter((book) => book.imageLinks)
-            // console.log(fbooks)
+
+            this.checkBookState(this.props.currentBookList.currentlyReading,fbooks,'currentlyReading')
+            this.checkBookState(this.props.currentBookList.read,fbooks,'read')
+            this.checkBookState(this.props.currentBookList.wantToRead,fbooks,'wantToRead')
+
             this.setState({books: fbooks})
         } else {
             this.setState({books})
@@ -43,6 +46,16 @@ class SearchBooks extends Component {
     updateShelf = (book, e) => {
         this.setState({shelf: e.target.value })
         this.props.onUpdateShelf(book, e.target.value)
+    }
+
+    checkBookState = function(shelf,fbooks,shelfName){
+        for (let bookId of shelf){
+            for (let book of fbooks){
+                if (bookId === book.id){
+                    book.shelf = shelfName
+                }
+            }
+        }
     }
 
    render(){
