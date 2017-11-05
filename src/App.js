@@ -14,14 +14,19 @@ class BooksApp extends React.Component {
   }
 
   componentDidMount() {
+    this.getAllBooks()
+
+  }
+
+  getAllBooks() {
     BooksAPI.getAll().then((books) => {
       this.setState({books})
     })
   }
 
   onHandleShelfUpdate(book, bookShlf) {
-    BooksAPI.update(book, bookShlf).then((bObj)=> {
-      console.log(bObj)
+    BooksAPI.update(book, bookShlf).then(()=> {
+      this.getAllBooks()
     })
   }
 
