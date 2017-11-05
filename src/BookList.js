@@ -4,13 +4,13 @@ import PropTypes from 'prop-types'
 
 class BookList extends Component {
     static propTypes = {
-        books: PropTypes.array.isRequired
+        books: PropTypes.array.isRequired,
+        onUpdateShelf: PropTypes.func.isRequired
     }
 
-    updateShelf = (bookId, e) => {
-        console.log(bookId, e.target.value)
-        // if (this.props.onUpdateShelf)
-        //     this.props.onUpdateShelf(bookId, bookShlf)
+    updateShelf = (book, e) => {
+        console.log(book, e.target.value)
+        this.props.onUpdateShelf(book, e.target.value)
     }
 
     render() {
@@ -55,7 +55,7 @@ function bookShelf(self, shelf, booksInShelf){
                   <div className="book-top">
                       <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.thumbnail })` }}></div>
                       <div className="book-shelf-changer">
-                      <select defaultValue={book.shelf} onChange={self.updateShelf.bind(this, book.id)}>
+                      <select defaultValue={book.shelf} onChange={self.updateShelf.bind(this, book)}>
                           <option value="none" disabled>Move to...</option>
                           <option value="currentlyReading">Currently Reading</option>
                           <option value="wantToRead">Want to Read</option>
