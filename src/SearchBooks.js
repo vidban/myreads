@@ -31,16 +31,15 @@ class SearchBooks extends Component {
     updateBooks = function(books) {
         if (books){
             let fbooks = books.filter((book) => book.imageLinks)
-
-            this.checkBookState(this.props.currentBookList.currentlyReading,fbooks,'currentlyReading')
-            this.checkBookState(this.props.currentBookList.read,fbooks,'read')
-            this.checkBookState(this.props.currentBookList.wantToRead,fbooks,'wantToRead')
-
+            if (Object.keys(this.props.currentBookList).length>0){
+                this.checkBookState(this.props.currentBookList.currentlyReading,fbooks,'currentlyReading')
+                this.checkBookState(this.props.currentBookList.read,fbooks,'read')
+                this.checkBookState(this.props.currentBookList.wantToRead,fbooks,'wantToRead')
+            }
             this.setState({books: fbooks})
         } else {
             this.setState({books})
-        }
-       
+        }     
     }
 
     updateShelf = (book, e) => {

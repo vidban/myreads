@@ -9,7 +9,6 @@ class BookList extends Component {
     }
 
     updateShelf = (book, e) => {
-        // console.log(book, e.target.value)
         this.props.onUpdateShelf(book, e.target.value)
     }
 
@@ -20,7 +19,6 @@ class BookList extends Component {
         let currentlyReading = books.filter(book => book.shelf==='currentlyReading')
         let wantToRead = books.filter(book => book.shelf==='wantToRead')
         let read = books.filter(book => book.shelf==='read')
-
 
         return (
             <div className="list-books">
